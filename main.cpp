@@ -2,6 +2,7 @@
 #include "ESPAT.h"
 
 //commento di Federico Copes
+//Commento di Jakub Bocian
 
 /*
 Example program using the ESPAT library.

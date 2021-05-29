@@ -21,23 +21,64 @@ ESPAT esp(D8, D2, 115200);
 DigitalOut Led0 (LED1); // D10
 DigitalOut Led1 (LED2); // D11
 
+DigitalOut Led3 (D4); // D4
+DigitalOut Led4 (D5); // D5
+DigitalOut Led2 (D7); // D7
+
 string htmlPage = "<html>"
-"<head><title>Led toggler</title></head>"
-"<body>"
-"<button onclick=\"fetch('./ledOn')\">Led ON</button>"
-"<button onclick=\"fetch('./ledOff')\">Led OFF</button>"
+"<head><title> LED Control </title></head>"
+"<body style=\"background-color:rgb(124,143,137);\">"
+"<h1 style=\"background-color:rgb(213,146,55);\"><center> Controllo Led </center></h1>"
+"<center><button onclick=\"fetch('./ledOn')\" style=\"background-color:#98D12E; width:400px; height:150px;\"><font size=\"6\"> Led Verde ON </font></button>"
+"<button onclick=\"fetch('./ledOff')\" style=\"background-color:#98D12E; width:400px; height:150px;\"><font size=\"6\"> Led Verde OFF </font></button></center>"
+"<br>"
+"<br>"
+"<center><button onclick=\"fetch('./ledbluOn')\" style=\"background-color:#20B5DF; width:400px; height:150px;\"><font size=\"6\"> Led Blu ON </font></button>"
+"<button onclick=\"fetch('./ledbluOff')\" style=\"background-color:#20B5DF; width:400px; height:150px;\"><font size=\"6\"> Led Blu OFF </font></button></center>"
+"<br>"
+"<br>"
+"<center><button onclick=\"fetch('./ledbiancoOn')\" style=\"background-color:white; width:400px; height:150px;\"><font size=\"6\"> Led Bianco ON </font></button>"
+"<button onclick=\"fetch('./ledbiancoOff')\" style=\"background-color:white; width:400px; height:150px;\"><font size=\"6\"> Led Bianco OFF </font></button></center>"
+"<br>"
+"<br>"
+"<center><button onclick=\"fetch('./ledrossoOn')\" style=\"background-color:#C43C3C; width:400px; height:150px;\"><font size=\"6\"> Led Rosso ON </font></button>"
+"<button onclick=\"fetch('./ledrossoOff')\" style=\"background-color:#C43C3C; width:400px; height:150px;\"><font size=\"6\"> Led Rosso OFF </font></button></center>"
+"<br>"
+"<footer><center> Federico Copes </center></footer>"
 "</body></html>"; // Website code
 
-void handleRequest(int linkId, string path) { // Bei HTTP Request
+void handleRequest(int linkId, string path) { // richiesta HTTP
     if (path == "/") { // Bei direkter IP
-        esp.httpReply(linkId, "200 OK", htmlPage); // Website senden
-    } else if (path == "/ledOn") { // Bei Pfad ledOn/ledOff, Led ein bzw ausschalten
-        Led1 = 0;
-        esp.httpReply(linkId, "200 OK", "success");
-    } else if (path == "/ledOff") {
+        esp.httpReply(linkId, "200 OK", htmlPage); // Carica sito Web
+    
+    //LED scheda NUCLEO
+    } else if (path == "/ledOn") { // Con il percorso ledOn/ledOff, accende o spegne il LED
         Led1 = 1;
         esp.httpReply(linkId, "200 OK", "success");
-    } else { // Bei unbekannter Seite 404 antworten
+    } else if (path == "/ledOff") {
+        Led1 = 0;
+        esp.httpReply(linkId, "200 OK", "success");
+        
+    //LED breadboard
+    }else if (path == "/ledbluOn") {
+        Led2 = 1;
+        esp.httpReply(linkId, "200 OK", "success");
+    } else if (path == "/ledbluOff") {
+        Led2 = 0;
+        esp.httpReply(linkId, "200 OK", "success");
+    }else if (path == "/ledbiancoOn") {
+        Led3 = 1;
+        esp.httpReply(linkId, "200 OK", "success");
+    } else if (path == "/ledbiancoOff") {
+        Led3 = 0;
+        esp.httpReply(linkId, "200 OK", "success");
+    }else if (path == "/ledrossoOn") {
+        Led4 = 1;
+        esp.httpReply(linkId, "200 OK", "success");
+    } else if (path == "/ledrossoOff") {
+        Led4 = 0;
+        esp.httpReply(linkId, "200 OK", "success");
+    } else { // Risponde 404 se la pagina è sconosciuta
         esp.httpReply(linkId, "404 Not Found", "404 Not found!");
     }
 }
@@ -45,7 +86,8 @@ void handleRequest(int linkId, string path) { // Bei HTTP Request
 int main() {
     Led0 = Led1 = 1; // Leds aus
     esp.resetEsp(); // ESP Reset
-    esp.initWifiAP("ESP", "12345678"); // ESP Access Point Initialiseren
+    esp.initWifiAP("ESP", "12345678", "1", "3"); // Inizializza Access Point ESP
     Led0 = 0; // LED ein um zu zeigen, dass Bertl aktiv ist
     esp.initServer(handleRequest); // Request Handler initialisieren
 }
+
